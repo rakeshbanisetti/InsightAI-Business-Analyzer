@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.env
+venv/
+.vscode/
+//__pycache__/ → Ignore Python cache files.
+*.pyc → Ignore compiled Python files.
+.env → Ignore environment variable files (often contain secrets).
+venv/ → Ignore your virtual environment.
+.vscode/ → Ignore VS Code workspace settings if you don't want to share them.//
