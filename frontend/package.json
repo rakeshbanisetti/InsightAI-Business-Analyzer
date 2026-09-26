@@ -12,9 +12,13 @@
   "dependencies": {
     "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/vite": "^4.3.3",
+    "html2canvas": "^1.4.1",
+    "html2canvas-pro": "^2.4.3",
+    "jspdf": "^4.2.1",
     "lucide-react": "^1.45.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
+    "recharts": "^3.10.1",
     "tailwindcss": "^4.0.0"
   },
   "devDependencies": {
