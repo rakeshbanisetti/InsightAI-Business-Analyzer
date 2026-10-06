@@ -28,15 +28,15 @@ export default function FileUploader({ onAnalysisComplete, setLoading, loading }
     formData.append('file', file);
 
     try {
-      // Ensure backend URL and path match FastAPI route
-      const response = await fetch('http://localhost:8000/api/upload', {
+      // Updated to point to your live Render backend URL
+      const response = await fetch('https://insightai-business-analyzer-api.onrender.com/api/upload', {
         method: 'POST',
         body: formData,
       });
 
       if (!response.ok) {
         if (response.status === 404) {
-          throw new Error('Endpoint not found. Make sure FastAPI server is running on port 8000.');
+          throw new Error('Endpoint not found. Make sure the Render backend URL is correct.');
         }
         const errorData = await response.json();
         throw new Error(errorData.detail || 'Failed to upload and analyze file');
@@ -73,43 +73,4 @@ export default function FileUploader({ onAnalysisComplete, setLoading, loading }
           />
         </label>
       ) : (
-        <div className="flex items-center justify-between bg-slate-950/70 border border-slate-800 rounded-2xl p-4">
-          <div className="flex items-center space-x-3">
-            <div className="p-2.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 rounded-xl">
-              <FileText className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-slate-200">{file.name}</p>
-              <p className="text-xs text-emerald-400 font-medium">Ready for processing</p>
-            </div>
-          </div>
-
-          <div className="flex items-center space-x-3">
-            <button
-              onClick={handleRemoveFile}
-              disabled={loading}
-              className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 rounded-xl transition-all"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <button
-              onClick={handleUploadAndAnalyze}
-              disabled={loading}
-              className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl flex items-center space-x-2 transition-all shadow-lg shadow-indigo-500/20 disabled:opacity-50"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>{loading ? 'Processing...' : 'Run Intelligence Analysis'}</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {error && (
-        <div className="flex items-center space-x-2 text-rose-400 bg-rose-500/10 border border-rose-500/20 p-3 rounded-xl text-xs">
-          <AlertCircle className="w-4 h-4 flex-shrink-0" />
-          <span>{error}</span>
-        </div>
-      )}
-    </div>
-  );
-}
+        <div className="flex items-center justify-between bg-slate-950/70 border border-slate-800
