@@ -18,7 +18,8 @@ export default function DataQueryAssistant({ columns = [], rawData = [], onQuery
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8000/api/query-dataset', {
+      // Updated to point to your live Render backend URL
+      const response = await fetch('https://insightai-business-analyzer-api.onrender.com/api/query-dataset', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -152,5 +153,5 @@ function executeLocalQuery(query, data) {
     return [...data].sort((a, b) => (parseFloat(b.Profit) || 0) - (parseFloat(a.Profit) || 0)).slice(0, 10);
   }
 
-  return data.slice(0, 25); // default fallback slice
+  return data.slice(0, 25);
 }
