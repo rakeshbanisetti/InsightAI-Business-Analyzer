@@ -22,6 +22,10 @@ load_dotenv()
 
 app = FastAPI()
 
+@app.get("/")
+def read_root():
+    return {"message": "FastAPI backend is running successfully!"}
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -111,7 +115,6 @@ async def upload_file(file: UploadFile = File(...)):
             try:
                 temp_df = GLOBAL_DATASET.copy()
                 temp_df[date_col] = pd.to_numeric(pd.to_datetime(temp_df[date_col], errors='coerce'), errors='coerce')
-                # Fallback to general grouping if time format varies
                 temp_df = GLOBAL_DATASET.copy()
                 grouped_time = temp_df.head(12)
             except Exception:
@@ -120,7 +123,6 @@ async def upload_file(file: UploadFile = File(...)):
         missing_vals_count = int(GLOBAL_DATASET.isnull().sum().sum())
         duplicate_rows_count = int(GLOBAL_DATASET.duplicated().sum())
 
-        # Guaranteed 5-point advanced retail & business intelligence recommendations
         recommendations = [
             f"Prioritize operational investments toward top-performing segment '{top_segment_name}', driving an aggregate sum of ${top_segment_val:,.2f}.",
             "Bundle top-performing high-margin products with complementary items to lift average basket and order size.",
@@ -166,50 +168,4 @@ async def upload_file(file: UploadFile = File(...)):
             "time_series": time_series,
             "ai_insights": ai_insights_obj,
             "recommendations": recommendations,
-            "anomalies": anomalies
-        }
-
-        return sanitize_for_json(response_payload)
-
-    except Exception as e:
-        print("Upload Error:", e)
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.post("/api/query-dataset")
-async def query_dataset(req: QueryRequest):
-    global GLOBAL_DATASET
-    if GLOBAL_DATASET is None or GLOBAL_DATASET.empty:
-        raise HTTPException(status_code=400, detail="No dataset uploaded")
-
-    df_filtered = GLOBAL_DATASET.copy()
-    execution_plan = {"query_str": ""}
-
-    try:
-        if client:
-            prompt_text = f"You are a Pandas expert. Columns: {list(GLOBAL_DATASET.columns)}. Query: '{req.prompt}'. Return JSON: {{\"query_str\": \"`Sales` > 500\"}}"
-            response = client.models.generate_content(
-                model="gemini-3.6-flash",
-                contents=prompt_text,
-                config=types.GenerateContentConfig(response_mime_type="application/json")
-            )
-            execution_plan = json.loads(response.text)
-            query_str = execution_plan.get("query_str", "")
-            if query_str:
-                df_filtered = df_filtered.query(query_str)
-    except Exception as e:
-        print(">>> Workbench Fallback Triggered (Using Local Filter):", e)
-        query_lower = req.prompt.lower()
-        for col in GLOBAL_DATASET.columns:
-            if col.lower() in query_lower:
-                try:
-                    match_vals = [val for val in GLOBAL_DATASET[col].dropna().unique() if str(val).lower() in query_lower]
-                    if match_vals:
-                        df_filtered = df_filtered[df_filtered[col].isin(match_vals)]
-                except Exception:
-                    pass
-
-    return sanitize_for_json({
-        "execution_plan": execution_plan,
-        "filtered_data": df_filtered.head(200).fillna("").to_dict(orient="records"),
-        "total_matches": len(df_filtered)
-    })
+            "anomalies":
