@@ -28,7 +28,6 @@ export default function FileUploader({ onAnalysisComplete, setLoading, loading }
     formData.append('file', file);
 
     try {
-      // Updated to point to your live Render backend URL
       const response = await fetch('https://insightai-business-analyzer-api.onrender.com/api/upload', {
         method: 'POST',
         body: formData,
@@ -73,4 +72,42 @@ export default function FileUploader({ onAnalysisComplete, setLoading, loading }
           />
         </label>
       ) : (
-        <div className="flex items-center justify-between bg-slate-950/70 border border-slate-800
+        <div className="flex items-center justify-between bg-slate-950/70 border border-slate-800 rounded-2xl p-4">
+          <div className="flex items-center space-x-3 truncate">
+            <div className="p-2.5 bg-indigo-500/10 border border-indigo-500/20 rounded-xl text-indigo-400">
+              <FileText className="w-5 h-5" />
+            </div>
+            <div className="truncate">
+              <p className="text-sm font-medium text-slate-200 truncate">{file.name}</p>
+              <p className="text-xs text-emerald-400 font-medium">Ready for processing</p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={handleRemoveFile}
+              disabled={loading}
+              className="p-2 text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 rounded-xl transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <button
+              onClick={handleUploadAndAnalyze}
+              disabled={loading}
+              className="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl font-medium text-sm shadow-lg shadow-indigo-600/20 transition-all disabled:opacity-50"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>{loading ? 'Analyzing...' : 'Run Intelligence Analysis'}</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {error && (
+        <div className="flex items-center space-x-2 bg-rose-500/10 border border-rose-500/20 text-rose-300 px-4 py-3 rounded-xl text-xs">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <span>{error}</span>
+        </div>
+      )}
+    </div>
+  );
+}
