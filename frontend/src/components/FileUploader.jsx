@@ -66,7 +66,7 @@ export default function FileUploader({ onAnalysisComplete, setLoading, loading }
           </div>
           <input
             type="file"
-            accept=".csv, .xlsx, .xls"
+            accept=".csv, .xlsx, .xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, text/csv, application/json"
             onChange={handleFileChange}
             className="hidden"
           />
